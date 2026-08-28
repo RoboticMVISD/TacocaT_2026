@@ -1,12 +1,14 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.testOpModes;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 
+@Disabled
 @TeleOp
-public class TestOpMode extends OpMode{
+public class TestDrive extends OpMode{
 
     MecanumDrive drive = new MecanumDrive();
 

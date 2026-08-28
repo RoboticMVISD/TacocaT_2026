@@ -4,7 +4,20 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+//Control HUB
+//Motor 0 = frontLeft
+//Motor 1 = frontRight
+//Motor 2 = backLeft
+//Motor 3 = backRight
 
+//Servo 1 =
+//Servo 2 =
+
+//Expansion HUB
+//Motor 0 = intake
+//Motor 1 =
+//Motor 2 =
+//Motor 3 =
 public class MecanumDrive {
 
     // Declare OpMode members for each of the 4 motors.
