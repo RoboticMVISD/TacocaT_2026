@@ -15,27 +15,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 public class PollenTracker2 extends OpMode {
 
     private Limelight3A limelight3A;
-    private MecanumDrive drive;
-    //private IMU imu;
+    MecanumDrive drive = new MecanumDrive();
 
-    public void init(HardwareMap hwMap) {
+    public void init() {
         // Initialize Limelight3A
-        limelight3A = hwMap.get(Limelight3A.class, "limelight");
+        limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
         limelight3A.pipelineSwitch(0);
 
         // Initialize Mecanum Drive
-        drive.init(hwMap);
-
-        // Initialize hardware variable for IMU.
-        //imu = hwMap.get(IMU.class, "imu");
-
-        // This needs to match orientation of Control Hub on robot
-        /* RevHubOrientationOnRobot RevOrientation = new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
-                RevHubOrientationOnRobot.UsbFacingDirection.RIGHT);
-
-        imu.initialize(new IMU.Parameters(RevOrientation));
-        */
+        drive.init(hardwareMap);
     }
 
     // start Limelight when start button is pressed
@@ -45,10 +33,6 @@ public class PollenTracker2 extends OpMode {
 
     public void loop() {
 
-        // find robot's current heading
-       /* YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-        limelight3A.updateRobotOrientation(orientation.getYaw(AngleUnit.RADIANS));
-        */
         // Capture field view from Limelight
         LLResult llResult = limelight3A.getLatestResult();
 
@@ -61,11 +45,11 @@ public class PollenTracker2 extends OpMode {
             telemetry.addData("Target Y offset", ty);
             telemetry.addData("Target Area", llResult.getTa());
 
-            driveToPollen(tx,ty);
+            driveToPollen(tx, ty);
         }
     }
 
-    public void driveToPollen (double headingError, double distanceError) {
+    public void driveToPollen(double headingError, double distanceError) {
         double KpSteer = -1;
         double KpSpeed = 1;
 
@@ -76,8 +60,8 @@ public class PollenTracker2 extends OpMode {
         steeringAdjust = KpSteer * headingError / 27.25;
 
         // Calculate speed
-        speedAdjust = KpSpeed * distanceError / 21.0;  // this formula needs to zero when
-                                                       // the pollen gets sucked in
+        speedAdjust = KpSpeed * (distanceError / 40) + 0.5;  // this formula needs to zero when
+        // the pollen gets sucked in
 
         telemetry.addData("Heading error", headingError);
         telemetry.addData("Distance error", distanceError);
@@ -90,5 +74,5 @@ public class PollenTracker2 extends OpMode {
         */
 
     }
-    }
 }
+
