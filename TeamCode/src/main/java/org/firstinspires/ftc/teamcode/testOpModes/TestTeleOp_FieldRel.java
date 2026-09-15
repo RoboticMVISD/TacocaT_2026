@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.Intake;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 
 @TeleOp
-@Disabled
+// @Disabled
 public class TestTeleOp_FieldRel extends OpMode {
 
     MecanumDrive drive = new MecanumDrive();

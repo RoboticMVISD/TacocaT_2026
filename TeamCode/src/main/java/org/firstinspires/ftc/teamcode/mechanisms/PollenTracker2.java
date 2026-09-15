@@ -49,11 +49,15 @@ public class PollenTracker2 extends OpMode {
             telemetry.addData("Target Y offset", ty);
             telemetry.addData("Target Area", llResult.getTa());
 
+            driveToPollen(tx, ty);
+            /*
             try {
                 driveToPollen(tx, ty);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            /*
+ */
         }
     }
 
@@ -65,7 +69,7 @@ public class PollenTracker2 extends OpMode {
         double speedAdjust = 0.0;
 
         // Calculate rotation
-        steeringAdjust = KpSteer * headingError / 27.25;
+        steeringAdjust = KpSteer * headingError / 360;
 
         // Calculate speed
         speedAdjust = KpSpeed * ((distanceError / 50) + 0.5);  // this formula needs to zero when
@@ -79,9 +83,8 @@ public class PollenTracker2 extends OpMode {
 
         intake.startIntake();
         drive.drive(speedAdjust, 0.0, steeringAdjust);
-        sleep(100);
+        sleep(1000);
         intake.stopIntake();
 
     }
 }
-
