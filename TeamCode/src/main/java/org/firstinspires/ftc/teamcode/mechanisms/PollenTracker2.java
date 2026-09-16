@@ -20,6 +20,7 @@ public class PollenTracker2 extends OpMode {
     MecanumDrive drive = new MecanumDrive();
     Intake intake = new Intake();
 
+    @Override
     public void init() {
         // Initialize Limelight3A
         limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
@@ -30,38 +31,13 @@ public class PollenTracker2 extends OpMode {
         intake.init(hardwareMap);
     }
 
+    @Override
     // start Limelight when start button is pressed
     public void start() {
         limelight3A.start();
     }
 
-    public void loop() {
-
-        // Capture field view from Limelight
-        LLResult llResult = limelight3A.getLatestResult();
-
-        if (llResult != null & llResult.isValid()) {
-
-            double tx = llResult.getTx();
-            double ty = llResult.getTy();
-
-            telemetry.addData("Target X offset", tx);
-            telemetry.addData("Target Y offset", ty);
-            telemetry.addData("Target Area", llResult.getTa());
-
-            driveToPollen(tx, ty);
-            /*
-            try {
-                driveToPollen(tx, ty);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            /*
- */
-        }
-    }
-
-    public void driveToPollen(double headingError, double distanceError) throws InterruptedException {
+    public void driveToPollen(double headingError, double distanceError) {
         double KpSteer = -1;
         double KpSpeed = 1;
 
@@ -86,5 +62,24 @@ public class PollenTracker2 extends OpMode {
         sleep(1000);
         intake.stopIntake();
 
+    }
+
+    @Override
+    public void loop() {
+
+        // Capture field view from Limelight
+        LLResult llResult = limelight3A.getLatestResult();
+
+        if (llResult != null & llResult.isValid()) {
+
+            double tx = llResult.getTx();
+            double ty = llResult.getTy();
+
+            telemetry.addData("Target X offset", tx);
+            telemetry.addData("Target Y offset", ty);
+            telemetry.addData("Target Area", llResult.getTa());
+
+            driveToPollen(tx, ty);
+        }
     }
 }
