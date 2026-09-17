@@ -4,14 +4,8 @@ import static java.lang.Thread.sleep;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 @Autonomous
 public class PollenTracker2 extends OpMode {
@@ -24,7 +18,7 @@ public class PollenTracker2 extends OpMode {
     public void init() {
         // Initialize Limelight3A
         limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight3A.pipelineSwitch(1);
+        limelight3A.pipelineSwitch(9);
 
         // Initialize Mecanum Drive
         drive.init(hardwareMap);
@@ -37,8 +31,36 @@ public class PollenTracker2 extends OpMode {
         limelight3A.start();
     }
 
+    @Override
+    public void loop() {
+
+        // Capture field view from Limelight
+        LLResult llResult = limelight3A.getLatestResult();
+
+        if (llResult != null & llResult.isValid()) {
+
+            double tx = llResult.getTx();
+            double ty = llResult.getTy();
+
+            telemetry.addData("Target X offset", tx);
+            telemetry.addData("Target Y offset", ty);
+            telemetry.addData("Target Area", llResult.getTa());
+
+            if (tx <= -26 && tx >= 26 && ty <= -10) {
+                // start intake and drive to pollen
+                intake.startIntake();
+                driveToPollen(tx, ty);
+            }
+            else {
+                // look for pollen
+                driveToPollen(10, 0);
+            }
+
+        }
+    }
+
     public void driveToPollen(double headingError, double distanceError) {
-        double KpSteer = -1;
+        double KpSteer = 1;
         double KpSpeed = 1;
 
         double steeringAdjust = 0.0;
@@ -59,27 +81,8 @@ public class PollenTracker2 extends OpMode {
 
         intake.startIntake();
         drive.drive(speedAdjust, 0.0, steeringAdjust);
-        sleep(1000);
-        intake.stopIntake();
 
     }
 
-    @Override
-    public void loop() {
 
-        // Capture field view from Limelight
-        LLResult llResult = limelight3A.getLatestResult();
-
-        if (llResult != null & llResult.isValid()) {
-
-            double tx = llResult.getTx();
-            double ty = llResult.getTy();
-
-            telemetry.addData("Target X offset", tx);
-            telemetry.addData("Target Y offset", ty);
-            telemetry.addData("Target Area", llResult.getTa());
-
-            driveToPollen(tx, ty);
-        }
-    }
 }
