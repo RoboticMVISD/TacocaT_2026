@@ -53,7 +53,7 @@ public class PollenTracker2 extends OpMode {
             }
             else {
                 // look for pollen
-                driveToPollen(10, 0);
+                driveToPollen(5, 0);
             }
 
         }
