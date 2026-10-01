@@ -36,14 +36,18 @@ public class AprilTagTracking extends OpMode {
 
     @Override
     public void loop() {
+        // get yaw from control hub IMU
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
         limelight.updateRobotOrientation((orientation.getYaw()));
+
+        // get latest limelight result, pipeline ## for April Tag
         LLResult llResult = limelight.getLatestResult();
         if (llResult != null && llResult.isValid()) {
             Pose3D botPose = llResult.getBotpose_MT2();
             telemetry.addData("Tx", llResult.getTx());
             telemetry.addData("Ty", llResult.getTy());
             telemetry.addData("Ta", llResult.getTa());
+            telemetry.addData("Botpose", botPose.toString());
         }
 
     }
