@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.Intake;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 
 @TeleOp
-@Disabled
+//@Disabled
 public class TestTeleOp_FieldRel extends OpMode {
 
     MecanumDrive drive = new MecanumDrive();
@@ -30,9 +30,9 @@ public class TestTeleOp_FieldRel extends OpMode {
 
         //For Intake (test if trigger buttons work)
         if (gamepad1.right_trigger !=0 ) {
-            intake.startIntake();
+            intake.startBothIntake();
         } else if (gamepad1.left_trigger !=0) {
-            intake.reverseIntake();
+            intake.reverseBothIntake();
         } else {
             intake.stopIntake();
         }

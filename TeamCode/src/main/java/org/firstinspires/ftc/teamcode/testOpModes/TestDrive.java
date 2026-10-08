@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 
-@Disabled
+//@Disabled
 @TeleOp
 public class TestDrive extends OpMode{
 
@@ -20,6 +20,8 @@ public class TestDrive extends OpMode{
     @Override
     public void loop() {
         drive.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+        telemetry.addData("Strafe", gamepad1.left_stick_x);
+        telemetry.addData("Forward", gamepad1.left_stick_y);
+        telemetry.addData("Turn", gamepad1.right_stick_x);
     }
-
 }

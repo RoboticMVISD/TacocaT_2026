@@ -4,16 +4,19 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.mechanisms.FlowerIntake;
 import org.firstinspires.ftc.teamcode.mechanisms.Intake;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
+import org.firstinspires.ftc.teamcode.mechanisms.Turret;
 
 @TeleOp
-@Disabled
+//@Disabled
 public class TestTeleOp extends OpMode {
 
     MecanumDrive drive = new MecanumDrive();
     Intake intake = new Intake();
-
+    FlowerIntake flowerIntake = new FlowerIntake();
+    Turret turret = new Turret();
     @Override
     public void init() {
         drive.init(hardwareMap);
@@ -29,11 +32,33 @@ public class TestTeleOp extends OpMode {
 
         //For Intake (test if trigger buttons work)
         if (gamepad1.right_trigger !=0 ) {
-            intake.startIntake();
+            intake.startBothIntake();
         } else if (gamepad1.left_trigger !=0) {
-            intake.reverseIntake();
+            intake.reverseBothIntake();
         } else {
             intake.stopIntake();
+        }
+
+        if (gamepad1.dpad_up) {
+            intake.gateOpen();
+        } else if (gamepad1.dpad_down) {
+            intake.gateClosed();
+        }
+
+        if (gamepad2.a) {
+            turret.setShooterPower(1);
+        } else if (gamepad2.b) {
+            turret.setShooterPower(-1);
+        } else {
+            turret.setShooterPower(0);
+        }
+
+        if (gamepad2.right_bumper) {
+            turret.rotateTurretRight();
+        } else if (gamepad2.left_bumper) {
+            turret.rotateTurretLeft();
+        } else {
+            turret.stopTurretRotate();
         }
     }
 }

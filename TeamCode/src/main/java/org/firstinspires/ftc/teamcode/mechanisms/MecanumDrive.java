@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.mechanisms;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
@@ -27,7 +28,6 @@ public class MecanumDrive {
     // Declare OpMode members for each of the 4 motors.
     private DcMotor frontLeftDrive, backLeftDrive, frontRightDrive, backRightDrive;
     private IMU imu;
-    // TODO: likely change this back to 1
     private final double SPIN_DAMPING = 1.0;   // higher means slower turning
 
     public void init(HardwareMap hwMap) {
@@ -41,7 +41,7 @@ public class MecanumDrive {
 
         // Set the left motors in reverse which is needed for drive trains where the left
         // motors are opposite to the right ones.
-        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);
