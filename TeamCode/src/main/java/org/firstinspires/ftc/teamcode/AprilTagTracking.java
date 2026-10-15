@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
+@Autonomous
 public class AprilTagTracking extends OpMode {
 
     private Limelight3A limelight;
