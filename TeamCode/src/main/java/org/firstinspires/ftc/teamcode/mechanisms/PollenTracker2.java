@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
-import static java.lang.Thread.sleep;
-
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -41,19 +39,25 @@ public class PollenTracker2 extends OpMode {
 
             double tx = llResult.getTx();
             double ty = llResult.getTy();
+            double ta = llResult.getTa();
 
             telemetry.addData("Target X offset", tx);
             telemetry.addData("Target Y offset", ty);
-            telemetry.addData("Target Area", llResult.getTa());
+            telemetry.addData("Target Area", ta);
 
-            if (tx <= -26 && tx >= 26 && ty <= -10) {
-                // start intake and drive to pollen
-                intake.startIntake();
-                driveToPollen(tx, ty);
+            if (ta . 0.1){
+                if (tx >= -23 && tx <= 23 && ty >= -9 && ty <= 28) {
+                    // start intake and drive to pollen
+                    intake.startIntake();
+                    driveToPollen(tx, ty);
+                }
             }
             else {
                 // look for pollen
-                driveToPollen(10, 0);
+                telemetry.clearAll();
+                telemetry.addData("looking for pollen", "");
+                // Heading error of 80 turns clockwise(?); Distance error of -25 makes speed 0
+                driveToPollen(80, -25);
             }
 
         }
@@ -83,6 +87,4 @@ public class PollenTracker2 extends OpMode {
         drive.drive(speedAdjust, 0.0, steeringAdjust);
 
     }
-
-
 }
