@@ -16,21 +16,24 @@ public class AprilTagTracking extends OpMode {
 
     @Override
     public void init() {
+        // rename if using two Limelight cameras
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(0);    // april tag  ### pipleline
 
+        // Upgrade this to pinpoint IMU !!!!
         imu = hardwareMap.get(IMU.class, "imu");
 
-        // This needs to be changed to match orientation of Control Hub on robot
+        // This matches orientation of Control Hub on robot
         RevHubOrientationOnRobot RevOrientation = new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
-                RevHubOrientationOnRobot.UsbFacingDirection.RIGHT);
+                RevHubOrientationOnRobot.UsbFacingDirection.UP);
 
         imu.initialize(new IMU.Parameters(RevOrientation));
     }
 
     @Override
     public void start() {
+
         limelight.start();
     }
 
@@ -44,11 +47,23 @@ public class AprilTagTracking extends OpMode {
         LLResult llResult = limelight.getLatestResult();
         if (llResult != null && llResult.isValid()) {
             Pose3D botPose = llResult.getBotpose_MT2();
+            //distance = getDistanceFromTag(llResult.getTa());
+            //telemetry.addData("Distance", distance);
             telemetry.addData("Tx", llResult.getTx());
             telemetry.addData("Ty", llResult.getTy());
             telemetry.addData("Ta", llResult.getTa());
             telemetry.addData("Botpose", botPose.toString());
+            telemetry.addData("Yaw", botPose.getOrientation().getYaw());
         }
 
     }
+
+    /*
+    public double getDistanceFromTag(double ta) {
+        double scale 30665.95;
+        double distance = (scale / ta);
+        return distance;
+    }
+
+ */
 }
