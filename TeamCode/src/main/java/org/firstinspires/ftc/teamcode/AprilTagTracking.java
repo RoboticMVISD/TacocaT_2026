@@ -62,14 +62,13 @@ public class AprilTagTracking extends OpMode {
             telemetry.addData("Ta", llResult.getTa());
             telemetry.addData("Botpose", botPose.toString());
             telemetry.addData("Yaw", botPose.getOrientation().getYaw());
-        }
 
             distance = getDistance(llResult.getTy());
             telemetry.addData("Distance", distance);
-        }
-        else {
+        } else {
             telemetry.addData("No Vaild Target", "found");
         }
+    }
 
     /*
     public double getDistanceFromTag(double ta) {
