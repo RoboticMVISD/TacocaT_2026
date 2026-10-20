@@ -14,8 +14,8 @@ public class Intake {
     private Servo IntakeGate;
 
     public void init(HardwareMap hwMap) {
-        Intake = hwMap.get(DcMotor.class,"intake");
-        Intake2 = hwMap.get(DcMotor.class, "intake2");
+        Intake = hwMap.get(DcMotor.class,"intakeFront");  //previously intake
+        Intake2 = hwMap.get(DcMotor.class, "intakeBack"); //previously intake2
         IntakeGate = hwMap.get(Servo.class, "intakeGate");
 
         // Set launcher motor to RUN_USING_ENCODER and BRAKE to slow down faster than coasting.

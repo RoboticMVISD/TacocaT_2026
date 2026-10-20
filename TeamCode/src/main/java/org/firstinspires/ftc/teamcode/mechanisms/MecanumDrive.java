@@ -64,7 +64,7 @@ public class MecanumDrive {
         // This needs to be changed to match orientation of Control Hub on robot
         RevHubOrientationOnRobot RevOrientation = new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
-                RevHubOrientationOnRobot.UsbFacingDirection.RIGHT);
+                RevHubOrientationOnRobot.UsbFacingDirection.UP);
 
         imu.initialize(new IMU.Parameters(RevOrientation));
     }

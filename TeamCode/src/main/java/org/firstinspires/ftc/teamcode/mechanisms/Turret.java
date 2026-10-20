@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Turret {
     DcMotorEx shooter1, shooter2;
     CRServo rotator;
+    DcMotor turretTracker;
 
     // ---- PIDF Variables to optimize shooting and reduce oscillations, overshoot, undershoot, etc ---- //
     public static double proportional = 300;
@@ -38,6 +39,10 @@ public class Turret {
         shooter2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shooter1.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, pidfCoefficients);
         shooter2.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, pidfCoefficients);
+
+        turretTracker = hardwareMap.dcMotor.get("backLeft");
+        turretTracker.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turretTracker.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void setShooterPower(float power) {
