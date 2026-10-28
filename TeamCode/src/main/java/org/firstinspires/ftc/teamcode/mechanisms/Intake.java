@@ -12,6 +12,7 @@ public class Intake {
     private DcMotor Intake;
     private DcMotor Intake2;
     private Servo IntakeGate;
+    boolean gateOpen = false;
 
     public void init(HardwareMap hwMap) {
         Intake = hwMap.get(DcMotor.class,"intakeFront");  //previously intake
@@ -28,7 +29,15 @@ public class Intake {
         Intake2.setDirection(DcMotor.Direction.FORWARD);
 
         stopIntake();
-        gateClosed();
+        gateOpen();
+    }
+
+    public void loop() {
+        if (gateOpen) {
+            gateOpen();
+        } else {
+            gateClosed();
+        }
     }
 
     public void stopIntake() {
@@ -50,6 +59,10 @@ public class Intake {
     public void reverseBothIntake() {
         Intake.setPower(REVERSE_SPEED);
         Intake2.setPower(REVERSE_SPEED);
+    }
+
+    public void moveGate() {
+        gateOpen = !gateOpen;
     }
 
     public void gateOpen() {

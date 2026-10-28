@@ -26,22 +26,25 @@ public class TestTeleOp extends OpMode {
         drive.init(hardwareMap);
         intake.init(hardwareMap);
         plow.init(hardwareMap);
-        ShooterPIDFTesting.init(this, true);
-        //turret.init(hardwareMap);
+        //ShooterPIDFTesting.init(this, true);
+        turret.init(hardwareMap);
     }
 
     @Override
     public void loop() {
+        intake.loop();
 
         //Shooter Implemented by Justin (Me) to tune PIDF and make shooters work.
         //Test Classes work, just need to implement controls for the driver who uses shooter
         //Don't delete test classes if you think of it. Comment them out for later
 
+        /*
         try {
             shooter.loop();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        */
 
 
 
@@ -58,16 +61,38 @@ public class TestTeleOp extends OpMode {
             intake.stopIntake();
         }
 
-        if (gamepad1.y) {
-            intake.gateOpen();
-        } else if (gamepad1.b) {
-            intake.gateClosed();
+        if (gamepad2.yWasPressed()) {
+            intake.moveGate();
         }
-        if (gamepad1.x) {
-            plow.plowUp();
-        } else if (gamepad1.a) {
-            plow.plowDown();
+        /*
+        if (gamepad1.yWasPressed()) {
+            plow.movePlow();
         }
+         */
+
+        if (gamepad2.a) {
+            turret.startShooter();
+        } else {
+            turret.stopShooter();
+        }
+        if (gamepad2.bWasPressed()) {
+            turret.changeSetVelocity(-2 * turret.velocity);
+        } else if (gamepad2.dpadUpWasPressed()) {
+            turret.changeSetVelocity(50);
+        } else if (gamepad2.dpadDownWasPressed()) {
+            turret.changeSetVelocity(-50);
+        }
+
+        telemetry.addData("Shooter Set Velocity:", turret.velocity);
+        /*
+        telemetry.addData("Shooter Current Velocity:", turret.currentVelocity);
+        telemetry.addData("Shooter Max Velocity:", turret.maxVelocity);
+        telemetry.addData("Predicted P:", turret.predictedP);
+        telemetry.addData("Predicted I:", turret.predictedI);
+        telemetry.addData("Predicted D:", turret.predictedD);
+        telemetry.addData("Predicted F:", turret.predictedF);
+        */
+        telemetry.update();
     }
 }
 

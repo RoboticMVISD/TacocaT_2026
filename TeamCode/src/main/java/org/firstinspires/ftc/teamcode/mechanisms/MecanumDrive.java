@@ -41,7 +41,7 @@ public class MecanumDrive {
 
         // Set the left motors in reverse which is needed for drive trains where the left
         // motors are opposite to the right ones.
-        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);

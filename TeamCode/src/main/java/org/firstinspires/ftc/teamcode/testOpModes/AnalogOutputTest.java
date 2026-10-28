@@ -1,20 +1,24 @@
 package org.firstinspires.ftc.teamcode.testOpModes;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.Servo;
 
+@TeleOp
 public class AnalogOutputTest extends OpMode {
     private CRServo servo;
     private AnalogInput analog;
     private double voltage;
-    private double positionDegrees;
+    private double positionDegrees = 0;
 
     @Override
     public void init() {
-        servo = hardwareMap.get(CRServo.class, "plowR");
-        analog = hardwareMap.get(AnalogInput.class, "plowRAnalog");
+        servo = hardwareMap.get(CRServo.class, "servo");
+        analog = hardwareMap.get(AnalogInput.class, "analog");
+
+        positionDegrees = 0;
     }
 
     @Override
