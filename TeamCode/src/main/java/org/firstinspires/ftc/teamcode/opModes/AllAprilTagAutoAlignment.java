@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
+
 @TeleOp
 public class AllAprilTagAutoAlignment extends OpMode {
 
@@ -29,8 +31,8 @@ public class AllAprilTagAutoAlignment extends OpMode {
 
     //----------------------- controller based PD tuning ----------
 
-    double[] stepSizes = {0.1, 0.01, 0.001, 0.0001};
-    int stepIndex = 1;
+    // double[] stepSizes = {0.1, 0.01, 0.001, 0.0001};
+    // int stepIndex = 1;
 
     @Override
     public void init() {
@@ -68,17 +70,21 @@ public class AllAprilTagAutoAlignment extends OpMode {
 
         if (gamepad1.dpadLeftWasPressed()) {
             limelight.pipelineSwitch(9);        // pipeline 9 for Red Audience April Tag
+            telemetry.addLine("Pipeline 9 April Tag Red Audience");
         }
         if (gamepad1.dpadRightWasPressed()) {
             limelight.pipelineSwitch(8);        // pipeline 8 for Blue Score April Tag
+            telemetry.addLine("Pipeline 8 April Tag Blue Score");
         }
 
         // D-pad up/down adjust D gain
         if (gamepad1.dpadUpWasPressed()) {
             limelight.pipelineSwitch(7);        // pipeline 7 for Blue Audience April Tag
+            telemetry.addLine("Pipeline 7 April Tag Blue Audience");
         }
         if (gamepad1.dpadDownWasPressed()) {
             limelight.pipelineSwitch(6);        // pipeline 6 for Red Score April Tag
+            telemetry.addLine("Pipeline 9 April Tag Red Score");
         }
 
 
