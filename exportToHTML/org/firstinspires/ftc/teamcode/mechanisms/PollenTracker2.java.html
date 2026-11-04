@@ -1,0 +1,120 @@
+<html>
+<head>
+<title>PollenTracker2.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+PollenTracker2.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">org</span><span class="s2">.</span><span class="s1">firstinspires</span><span class="s2">.</span><span class="s1">ftc</span><span class="s2">.</span><span class="s1">teamcode</span><span class="s2">.</span><span class="s1">mechanisms</span><span class="s2">;</span>
+
+<span class="s0">import static </span><span class="s1">java</span><span class="s2">.</span><span class="s1">lang</span><span class="s2">.</span><span class="s1">Thread</span><span class="s2">.</span><span class="s1">sleep</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">qualcomm</span><span class="s2">.</span><span class="s1">hardware</span><span class="s2">.</span><span class="s1">limelightvision</span><span class="s2">.</span><span class="s1">LLResult</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">qualcomm</span><span class="s2">.</span><span class="s1">hardware</span><span class="s2">.</span><span class="s1">limelightvision</span><span class="s2">.</span><span class="s1">Limelight3A</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">qualcomm</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">eventloop</span><span class="s2">.</span><span class="s1">opmode</span><span class="s2">.</span><span class="s1">Autonomous</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">qualcomm</span><span class="s2">.</span><span class="s1">robotcore</span><span class="s2">.</span><span class="s1">eventloop</span><span class="s2">.</span><span class="s1">opmode</span><span class="s2">.</span><span class="s1">OpMode</span><span class="s2">;</span>
+
+<span class="s1">@Autonomous</span>
+<span class="s0">public class </span><span class="s1">PollenTracker2 </span><span class="s0">extends </span><span class="s1">OpMode </span><span class="s2">{</span>
+
+    <span class="s0">private </span><span class="s1">Limelight3A limelight3A</span><span class="s2">;</span>
+    <span class="s1">MecanumDrive drive </span><span class="s2">= </span><span class="s0">new </span><span class="s1">MecanumDrive</span><span class="s2">();</span>
+    <span class="s1">Intake intake </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Intake</span><span class="s2">();</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">init</span><span class="s2">() {</span>
+        <span class="s3">// Initialize Limelight3A</span>
+        <span class="s1">limelight3A </span><span class="s2">= </span><span class="s1">hardwareMap</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">Limelight3A</span><span class="s2">.</span><span class="s0">class</span><span class="s2">, </span><span class="s4">&quot;limelight&quot;</span><span class="s2">);</span>
+        <span class="s1">limelight3A</span><span class="s2">.</span><span class="s1">pipelineSwitch</span><span class="s2">(</span><span class="s5">9</span><span class="s2">);</span>
+
+        <span class="s3">// Initialize Mecanum Drive</span>
+        <span class="s1">drive</span><span class="s2">.</span><span class="s1">init</span><span class="s2">(</span><span class="s1">hardwareMap</span><span class="s2">);</span>
+        <span class="s1">intake</span><span class="s2">.</span><span class="s1">init</span><span class="s2">(</span><span class="s1">hardwareMap</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s3">// start Limelight when start button is pressed</span>
+    <span class="s0">public void </span><span class="s1">start</span><span class="s2">() {</span>
+        <span class="s1">limelight3A</span><span class="s2">.</span><span class="s1">start</span><span class="s2">();</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">loop</span><span class="s2">() {</span>
+
+        <span class="s3">// Capture field view from Limelight</span>
+        <span class="s1">LLResult llResult </span><span class="s2">= </span><span class="s1">limelight3A</span><span class="s2">.</span><span class="s1">getLatestResult</span><span class="s2">();</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">llResult </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">&amp; </span><span class="s1">llResult</span><span class="s2">.</span><span class="s1">isValid</span><span class="s2">()) {</span>
+
+            <span class="s0">double </span><span class="s1">tx </span><span class="s2">= </span><span class="s1">llResult</span><span class="s2">.</span><span class="s1">getTx</span><span class="s2">();</span>
+            <span class="s0">double </span><span class="s1">ty </span><span class="s2">= </span><span class="s1">llResult</span><span class="s2">.</span><span class="s1">getTy</span><span class="s2">();</span>
+            <span class="s0">double </span><span class="s1">ta </span><span class="s2">= </span><span class="s1">llResult</span><span class="s2">.</span><span class="s1">getTa</span><span class="s2">();</span>
+
+            <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addData</span><span class="s2">(</span><span class="s4">&quot;Target X offset&quot;</span><span class="s2">, </span><span class="s1">tx</span><span class="s2">);</span>
+            <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addData</span><span class="s2">(</span><span class="s4">&quot;Target Y offset&quot;</span><span class="s2">, </span><span class="s1">ty</span><span class="s2">);</span>
+            <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addData</span><span class="s2">(</span><span class="s4">&quot;Target Area&quot;</span><span class="s2">, </span><span class="s1">ta</span><span class="s2">);</span>
+
+            <span class="s3">/*if (tx &gt;= -23 &amp;&amp; tx &lt;= 23 &amp;&amp; ty &gt;= -9 &amp;&amp; ty &lt;= 28) { 
+                // start intake and drive to pollen 
+                intake.startIntake(); 
+                driveToPollen(tx, ty); 
+            } 
+            */</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">ta </span><span class="s2">&gt; </span><span class="s5">0.1</span><span class="s2">) {</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">tx </span><span class="s2">&gt;= -</span><span class="s5">23 </span><span class="s2">&amp;&amp; </span><span class="s1">tx </span><span class="s2">&lt;= </span><span class="s5">23 </span><span class="s2">&amp;&amp; </span><span class="s1">ty </span><span class="s2">&gt;= -</span><span class="s5">9 </span><span class="s2">&amp;&amp; </span><span class="s1">ty </span><span class="s2">&lt;= </span><span class="s5">28</span><span class="s2">) {</span>
+                    <span class="s3">// start intake and drive to pllen</span>
+                    <span class="s1">intake</span><span class="s2">.</span><span class="s1">startIntake</span><span class="s2">();</span>
+                    <span class="s1">driveToPollen</span><span class="s2">(</span><span class="s1">tx</span><span class="s2">, </span><span class="s1">ty</span><span class="s2">);</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+            <span class="s0">else </span><span class="s2">{</span>
+                <span class="s3">// look for pollen</span>
+                <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">clearAll</span><span class="s2">();</span>
+                <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addData</span><span class="s2">(</span><span class="s4">&quot;looking for pollen&quot;</span><span class="s2">, </span><span class="s4">&quot; &quot;</span><span class="s2">);</span>
+                <span class="s1">driveToPollen</span><span class="s2">(</span><span class="s5">80</span><span class="s2">, -</span><span class="s5">25</span><span class="s2">);</span>
+            <span class="s2">}</span>
+
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">driveToPollen</span><span class="s2">(</span><span class="s0">double </span><span class="s1">headingError</span><span class="s2">, </span><span class="s0">double </span><span class="s1">distanceError</span><span class="s2">) {</span>
+        <span class="s0">double </span><span class="s1">KpSteer </span><span class="s2">= </span><span class="s5">1</span><span class="s2">;</span>
+        <span class="s0">double </span><span class="s1">KpSpeed </span><span class="s2">= </span><span class="s5">0.8</span><span class="s2">;</span>
+
+        <span class="s0">double </span><span class="s1">steeringAdjust </span><span class="s2">= </span><span class="s5">0.0</span><span class="s2">;</span>
+        <span class="s0">double </span><span class="s1">speedAdjust </span><span class="s2">= </span><span class="s5">0.0</span><span class="s2">;</span>
+
+        <span class="s3">// Calculate rotation</span>
+        <span class="s1">steeringAdjust </span><span class="s2">= </span><span class="s1">KpSteer </span><span class="s2">* </span><span class="s1">headingError </span><span class="s2">/ </span><span class="s5">360</span><span class="s2">;</span>
+
+        <span class="s3">// Calculate speed</span>
+        <span class="s1">speedAdjust </span><span class="s2">= </span><span class="s1">KpSpeed </span><span class="s2">* ((</span><span class="s1">distanceError </span><span class="s2">/ </span><span class="s5">50</span><span class="s2">) + </span><span class="s5">0.5</span><span class="s2">);  </span><span class="s3">// this formula needs to zero when</span>
+        <span class="s3">// the pollen gets sucked in</span>
+
+        <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addData</span><span class="s2">(</span><span class="s4">&quot;Heading error&quot;</span><span class="s2">, </span><span class="s1">headingError</span><span class="s2">);</span>
+        <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addData</span><span class="s2">(</span><span class="s4">&quot;Distance error&quot;</span><span class="s2">, </span><span class="s1">distanceError</span><span class="s2">);</span>
+
+        <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addData</span><span class="s2">(</span><span class="s4">&quot;Steering Adjust&quot;</span><span class="s2">, </span><span class="s1">steeringAdjust</span><span class="s2">);</span>
+        <span class="s1">telemetry</span><span class="s2">.</span><span class="s1">addData</span><span class="s2">(</span><span class="s4">&quot;Speed Adjust&quot;</span><span class="s2">, </span><span class="s1">speedAdjust</span><span class="s2">);</span>
+
+        <span class="s1">intake</span><span class="s2">.</span><span class="s1">startIntake</span><span class="s2">();</span>
+        <span class="s1">drive</span><span class="s2">.</span><span class="s1">drive</span><span class="s2">(</span><span class="s1">speedAdjust</span><span class="s2">, </span><span class="s5">0.0</span><span class="s2">, </span><span class="s1">steeringAdjust</span><span class="s2">);</span>
+
+    <span class="s2">}</span>
+
+
+<span class="s2">}</span></pre>
+</body>
+</html>
