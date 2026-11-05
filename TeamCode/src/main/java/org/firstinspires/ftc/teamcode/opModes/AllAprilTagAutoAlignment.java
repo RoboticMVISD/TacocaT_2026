@@ -146,11 +146,14 @@ public class AllAprilTagAutoAlignment extends OpMode {
         if (gamepad1.dpadDownWasPressed()) {
             kD -= stepSizes[stepIndex];
         }
-
+*/
         // -------------------------------- telemetry ---------------------------
         if (llResult != null && llResult.isValid()) {
             if (gamepad1.left_trigger > 0.3) {
                 telemetry.addLine("AUTO ALIGN");
+                telemetry.addData("Target X", llResult.getTx());
+                telemetry.addData("Target Y", llResult.getTy());
+                telemetry.addData("Target Area", llResult.getTa());
             }
             // display Detection telemetry
             telemetry.addData("Error", error);
@@ -158,10 +161,12 @@ public class AllAprilTagAutoAlignment extends OpMode {
             telemetry.addLine("MANUAL ROTATE MODE");
         }
         telemetry.addLine("--------------------");
+        telemetry.addData("Pipeline: ", llResult.getPipelineIndex());
+        /*
         telemetry.addData("Tuning P: ", "%.4f (Dpad L/R)", kP);
         telemetry.addData("Tuning D: ", "%.4f (Dpad U/D)", kD);
         telemetry.addData("Step Size: ", "%.4f (B button)", stepSizes[stepIndex]);
+*/
 
- */
     }
 }
