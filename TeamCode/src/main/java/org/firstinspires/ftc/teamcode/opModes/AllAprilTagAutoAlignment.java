@@ -60,8 +60,8 @@ public class AllAprilTagAutoAlignment extends OpMode {
     public void loop() {
 
         //------------------ set mecanum drive inputs -------------
-        forward = -gamepad1.left_stick_x;
-        strafe = gamepad1.left_stick_y;
+        forward = -gamepad1.left_stick_y;
+        strafe = gamepad1.left_stick_x;
         rotate = gamepad1.right_stick_x;
 
         //---------------------- get april tag info ----------------
@@ -97,15 +97,19 @@ public class AllAprilTagAutoAlignment extends OpMode {
             if (llResult != null && llResult.isValid()) {
 
                 error = goalX - llResult.getTx();
+                telemetry.addData("Tx ", llResult.getTx());
+                telemetry.addData("error ", error);
 
                 if (Math.abs(error) < angleTolerance) {
                     rotate = 0;
                 } else {
                     double pTerm = error * kP;
+                    telemetry.addData("pTerm ", pTerm);
 
                     curTime = getRuntime();
                     double dT = curTime - lastTime;
                     double dTerm = ((error - lastError) / dT) * kD;
+                    telemetry.addData("dTerm ", dTerm);
 
                     rotate = Range.clip(pTerm + dTerm, -0.4, 0.4);
 
