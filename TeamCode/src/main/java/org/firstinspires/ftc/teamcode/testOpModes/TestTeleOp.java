@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.FlowerIntake;
 import org.firstinspires.ftc.teamcode.mechanisms.FlowerPlower;
 import org.firstinspires.ftc.teamcode.mechanisms.Intake;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
+import org.firstinspires.ftc.teamcode.mechanisms.PositionalAim;
 import org.firstinspires.ftc.teamcode.mechanisms.ShooterPIDFTesting;
 import org.firstinspires.ftc.teamcode.mechanisms.Turret;
 
@@ -20,6 +21,7 @@ public class TestTeleOp extends OpMode {
     FlowerPlower plow = new FlowerPlower();
     FlowerIntake flowerIntake = new FlowerIntake();
     Turret turret = new Turret();
+    PositionalAim autoAim = new PositionalAim();
     org.firstinspires.ftc.teamcode.mechanisms.ShooterPIDFTesting shooter = new org.firstinspires.ftc.teamcode.mechanisms.ShooterPIDFTesting();
     @Override
     public void init() {
@@ -28,11 +30,15 @@ public class TestTeleOp extends OpMode {
         plow.init(hardwareMap);
         //ShooterPIDFTesting.init(this, true);
         turret.init(hardwareMap);
+        autoAim.init(hardwareMap, this, true, false, null, turret);
+        autoAim.aimEnabled = false;
+        autoAim.launchEnabled = false;
     }
 
     @Override
     public void loop() {
         intake.loop();
+        autoAim.loop();
 
         //Shooter Implemented by Justin (Me) to tune PIDF and make shooters work.
         //Test Classes work, just need to implement controls for the driver who uses shooter
@@ -70,22 +76,20 @@ public class TestTeleOp extends OpMode {
         }
          */
 
-        if (gamepad2.a) {
-            turret.startShooter();
+        if (gamepad2.aWasPressed() || gamepad2.a) {
+            autoAim.launchEnabled = true;
+        } else if(gamepad2.aWasReleased()){
+            autoAim.launchEnabled = false;
+        } else if (gamepad2.bWasPressed()) {
+            turret.setLauncherVelocity(-500);
         } else {
             turret.stopShooter();
         }
-        if (gamepad2.bWasPressed()) {
-            turret.changeSetVelocity(-2 * turret.velocity);
-        } else if (gamepad2.dpadUpWasPressed()) {
-            turret.changeSetVelocity(50);
-        } else if (gamepad2.dpadDownWasPressed()) {
-            turret.changeSetVelocity(-50);
-        }
 
+        telemetry.addData("Distance From Goal:", autoAim.rangeToGoal);
         telemetry.addData("Shooter Set Velocity:", turret.velocity);
+        telemetry.addData("Shooter Current Velocity:", turret.shooter1.getVelocity());
         /*
-        telemetry.addData("Shooter Current Velocity:", turret.currentVelocity);
         telemetry.addData("Shooter Max Velocity:", turret.maxVelocity);
         telemetry.addData("Predicted P:", turret.predictedP);
         telemetry.addData("Predicted I:", turret.predictedI);

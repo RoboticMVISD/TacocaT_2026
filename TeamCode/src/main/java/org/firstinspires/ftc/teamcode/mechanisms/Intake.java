@@ -6,15 +6,15 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Intake {
-    private final double STOP_SPEED = 0.0; //We send this power to the servos when we want them to stop.
-    private final double FULL_SPEED = 1.0;
+    private static final double STOP_SPEED = 0.0; //We send this power to the servos when we want them to stop.
+    private static final double FULL_SPEED = 1.0;
     private final double REVERSE_SPEED = -1.0;
-    private DcMotor Intake;
-    private DcMotor Intake2;
-    private Servo IntakeGate;
+    public static DcMotor Intake;
+    public static DcMotor Intake2;
+    private static Servo IntakeGate;
     boolean gateOpen = false;
 
-    public void init(HardwareMap hwMap) {
+    public static void init(HardwareMap hwMap) {
         Intake = hwMap.get(DcMotor.class,"intakeFront");  //previously intake
         Intake2 = hwMap.get(DcMotor.class, "intakeBack"); //previously intake2
         IntakeGate = hwMap.get(Servo.class, "intakeGate");
@@ -29,7 +29,7 @@ public class Intake {
         Intake2.setDirection(DcMotor.Direction.FORWARD);
 
         stopIntake();
-        gateOpen();
+        gateClosed();
     }
 
     public void loop() {
@@ -40,12 +40,12 @@ public class Intake {
         }
     }
 
-    public void stopIntake() {
+    public static void stopIntake() {
         Intake.setPower(STOP_SPEED);
         Intake2.setPower(STOP_SPEED);
     }
 
-    public void startBothIntake() {
+    public static void startBothIntake() {
         Intake.setPower(FULL_SPEED);
         Intake2.setPower(FULL_SPEED);
     }
@@ -65,11 +65,11 @@ public class Intake {
         gateOpen = !gateOpen;
     }
 
-    public void gateOpen() {
-        IntakeGate.setPosition(1);
+    public static void gateClosed() {
+        IntakeGate.setPosition(0.35);
     }
 
-    public void gateClosed() {
+    public static void gateOpen() {
         IntakeGate.setPosition(-1);
     }
 }

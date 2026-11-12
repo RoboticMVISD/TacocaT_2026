@@ -84,7 +84,7 @@ public class ConceptAprilTagSwitchableCameras extends LinearOpMode {
         while (opModeIsActive()) {
 
             telemetryCameraSwitching();
-            telemetryAprilTag();
+            //telemetryAprilTag();
 
             // Push telemetry to the Driver Station.
             telemetry.update();
@@ -146,7 +146,7 @@ public class ConceptAprilTagSwitchableCameras extends LinearOpMode {
     /**
      * Add telemetry about AprilTag detections.
      */
-    private void telemetryAprilTag() {
+    /*private void telemetryAprilTag() {
 
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         telemetry.addData("# AprilTags Detected", currentDetections.size());
@@ -169,7 +169,7 @@ public class ConceptAprilTagSwitchableCameras extends LinearOpMode {
         telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
         telemetry.addLine("RBE = Range, Bearing & Elevation");
 
-    }   // end method telemetryAprilTag()
+    }   // end method telemetryAprilTag()*/
 
     /**
      * Set the active camera according to input from the gamepad.

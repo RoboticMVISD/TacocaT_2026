@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.mechanisms;
 
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -13,17 +14,29 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 
 public class Turret {
-    DcMotorEx shooter1, shooter2;
-    CRServo rotator1, rotator2;
-    DcMotor turretTracker;
+    public static DcMotorEx shooter1;
+    static DcMotorEx shooter2;
+    static CRServo rotator1;
+    static CRServo rotator2;
+    private static AnalogInput turretTracker1;
+    private static AnalogInput turretTracker2;
 
+    private static double voltage1, voltage2;
+    private static double currentReadingDegrees1 = 0, currentReadingDegrees2 = 0;
+    private static double lastReadingDegrees1 = 0;
+    private static double lastReadingDegrees2 = 0;
+    private static double finalDegrees1 = 0;
+    private static double finalDegrees2 = 0;
+    private static double totalServoDegrees = 0;
+    public static double totalTurretDegrees = 0;
+    private static boolean firstRead = true;
     public static double velocity;
     public static double currentVelocity;
     public static double maxVelocity = 0;
     public static double predictedP, predictedI, predictedD, predictedF;
 
     // ---- PIDF Variables to optimize shooting and reduce oscillations, overshoot, undershoot, etc ---- //
-    public static double proportional = 1.25065;
+    public static double proportional = 200;
     public static double integral = 0.1251065;
     public static double derivative = 0;
     public static double feedForward = 12.5065;
@@ -35,8 +48,8 @@ public class Turret {
         rotator1 = hardwareMap.get(CRServo.class, "rotatorL");
         rotator2 = hardwareMap.get(CRServo.class, "rotatorR");
 
-        shooter1.setDirection(DcMotorSimple.Direction.FORWARD);
-        shooter2.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooter1.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooter2.setDirection(DcMotorSimple.Direction.FORWARD);
         shooter1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         shooter2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         shooter1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -46,9 +59,12 @@ public class Turret {
         shooter1.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, pidfCoefficients);
         shooter2.setPIDFCoefficients(DcMotorEx.RunMode.RUN_USING_ENCODER, pidfCoefficients);
 
-        turretTracker = hardwareMap.dcMotor.get("backLeft");
-        turretTracker.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        turretTracker.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        turretTracker1 = hardwareMap.get(AnalogInput.class, "turretTrackerL");
+        turretTracker2 = hardwareMap.get(AnalogInput.class, "turretTrackerR");
+    }
+
+    public void loop() {
+        trackTurretAngle();
     }
 
     public void PIDFCalibration() {
@@ -73,7 +89,7 @@ public class Turret {
         shooter2.setVelocity(velocity);
     }
 
-    public void stopShooter() {
+    public static void stopShooter() {
         shooter1.setVelocity(0);
         shooter2.setVelocity(0);
     }
@@ -86,8 +102,58 @@ public class Turret {
         rotator1.setPower(-1);
         rotator2.setPower(-1);
     }
-    public void stopTurretRotate() {
+    public static void stopTurretRotate() {
         rotator1.setPower(0);
         rotator2.setPower(0);
+    }
+
+    public static void setTurretRotate(double power) {
+        rotator1.setPower(power);
+        rotator2.setPower(power);
+    }
+
+    public static void setLauncherVelocity(double Velocity) {
+        shooter1.setVelocity(Velocity);
+        shooter2.setVelocity(Velocity);
+    }
+
+    public static void trackTurretAngle() {
+        voltage1 = turretTracker1.getVoltage();
+        voltage2 = turretTracker2.getVoltage();
+
+        //💥convert voltage reading to degrees, max voltage for an analog input is 3.3V
+        currentReadingDegrees1 = (voltage1 / 3.3) * 360;
+        currentReadingDegrees2 = (voltage2 / 3.3) * 360;
+
+        if (firstRead) {
+            lastReadingDegrees1 = currentReadingDegrees1;
+            finalDegrees1 = currentReadingDegrees1;
+            lastReadingDegrees2 = currentReadingDegrees2;
+            finalDegrees2 = currentReadingDegrees2;
+            firstRead = false;
+        }
+        //🚀detect rollover if the change in servo position is greater than the 180 degree threshold
+        double delta1 = currentReadingDegrees1 - lastReadingDegrees1;
+        double delta2 = currentReadingDegrees2 - lastReadingDegrees2;
+        if (delta1<-180) {
+            delta1 += 360;
+        }
+        if (delta1>180) {
+            delta1 -= 360;
+        }
+        if (delta2<-180) {
+            delta2 += 360;
+        }
+        if (delta2>180) {
+            delta2 -= 360;
+        }
+        finalDegrees1 += delta1;
+        finalDegrees2 += delta2;
+
+        totalServoDegrees = (finalDegrees1 + finalDegrees2) / 2;
+        totalTurretDegrees = totalServoDegrees * 1.76;
+
+        lastReadingDegrees1 = currentReadingDegrees1;
+        lastReadingDegrees2 = currentReadingDegrees2;
     }
 }

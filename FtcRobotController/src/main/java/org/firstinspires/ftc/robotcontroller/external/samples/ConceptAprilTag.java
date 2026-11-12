@@ -120,7 +120,7 @@ public class ConceptAprilTag extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            telemetryAprilTag();
+            //telemetryAprilTag();
 
             // Push telemetry to the Driver Station.
             telemetry.update();
@@ -213,12 +213,13 @@ public class ConceptAprilTag extends LinearOpMode {
     /**
      * Add telemetry about AprilTag detections.
      */
-    private void telemetryAprilTag() {
+    /*private void telemetryAprilTag() {
 
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         telemetry.addData("# AprilTags Detected", currentDetections.size());
 
         // Step through the list of detections and display info for each one.
+
         for (AprilTagDetection detection : currentDetections) {
             if (detection.metadata != null) {
                 telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
@@ -236,6 +237,6 @@ public class ConceptAprilTag extends LinearOpMode {
         telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
         telemetry.addLine("RBE = Range, Bearing & Elevation");
 
-    }   // end method telemetryAprilTag()
+    }   // end method telemetryAprilTag()*/
 
 }   // end class

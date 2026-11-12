@@ -147,7 +147,7 @@ public class ConceptAprilTagLocalization extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            telemetryAprilTag();
+            //telemetryAprilTag();
 
             // Push telemetry to the Driver Station.
             telemetry.update();
@@ -240,7 +240,7 @@ public class ConceptAprilTagLocalization extends LinearOpMode {
     /**
      * Add telemetry about AprilTag detections.
      */
-    private void telemetryAprilTag() {
+    /*private void telemetryAprilTag() {
 
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         telemetry.addData("# AprilTags Detected", currentDetections.size());
@@ -270,6 +270,6 @@ public class ConceptAprilTagLocalization extends LinearOpMode {
         telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
         telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
 
-    }   // end method telemetryAprilTag()
+    }   // end method telemetryAprilTag()*/
 
 }   // end class
