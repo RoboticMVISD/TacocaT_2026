@@ -7,13 +7,15 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.AutoRoutines.StaticBlueAuto;
+import org.firstinspires.ftc.teamcode.AutoRoutines.StaticRedAuto;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 public class PositionalAim {
     static OpMode op;
     static Turret turret;
-    private static Follower follower;
-    private Pose robotPose;
+    public static Follower follower;
+    public Pose robotPose;
     private double botX;
     private double botY;
     private double botAngle;
@@ -32,11 +34,14 @@ public class PositionalAim {
     private double currentGoalY;
     private static final PoseFactory poseFactory = PoseFactory.degrees();
     private static Pose start;
-    private static final Pose redStart = poseFactory.of(118, 12, 90);
-    private static final Pose blueStart = poseFactory.of(130,20,180);
+    private static boolean red;
+    private static final Pose redStart = poseFactory.of(14.5, 122, 0);
+    private static final Pose blueStart = poseFactory.of(130, 20, 180);
     private final double goalHeight = 60;
     private final double blueAudienceX = 84.5, blueAudienceY = 55;
     private final double blueGoalX = 84.5, blueGoalY = 85;
+    private final double redAudienceX = 57.5, redAudienceY = 55;
+    private final double redGoalX = 57.5, redGoalY = 85;
     private final double turretHeight = 8.9;
     public static boolean aimEnabled = false;
     public boolean launchEnabled = false;
@@ -48,24 +53,34 @@ public class PositionalAim {
     double curTime = 0;
     double lastTime = 0;
     final double aimBoundary = 1;
-    final double launchMultiplier = 1.00543;
-    final double launchOffset = 778.42705;
+    final double launchMultiplier = 1.00538;
+    final double launchOffset = 948.03381;
     double[] stepSizes = {0.1, 0.01, 0.001, 0.0001, 0.00001};
     int stepIndex = 0;
 
-    public static void init(HardwareMap hardwareMap, OpMode OP, boolean InTeleop, boolean red, Follower Follower, Turret Turret) {
+    public static void init(HardwareMap hardwareMap, OpMode OP, boolean InTeleop, boolean Red, Follower Follower, Turret Turret) {
         op = OP;
         inTeleop = InTeleop;
         turret = Turret;
-        if (red) {
+        if (Red) {
             start = redStart;
+            red = true;
         } else {
             start = blueStart;
+            red = false;
         }
 
         if (inTeleop) {
             follower = Constants.create(hardwareMap);
-            follower.setPose(start);
+            if (StaticBlueAuto.lastPosition != null || StaticRedAuto.lastPosition != null) {
+                if (red) {
+                    follower.setPose(StaticRedAuto.lastPosition);
+                } else {
+                    follower.setPose(StaticBlueAuto.lastPosition);
+                }
+            } else {
+                follower.setPose(start);
+            }
             follower.update();
         } else {
             follower = Follower;
@@ -79,11 +94,21 @@ public class PositionalAim {
         robotPose = follower.pose();
 
         if (robotPose.y() < 70) {
-            currentGoalX = blueAudienceX;
-            currentGoalY = blueAudienceY;
+            if (red) {
+                currentGoalX = redAudienceX;
+                currentGoalY = redAudienceY;
+            } else {
+                currentGoalX = blueAudienceX;
+                currentGoalY = blueAudienceY;
+            }
         } else {
-            currentGoalX = blueGoalX;
-            currentGoalY = blueGoalY;
+            if (red) {
+                currentGoalX = redGoalX;
+                currentGoalY = redGoalY;
+            } else {
+                currentGoalX = blueGoalX;
+                currentGoalY = blueGoalY;
+            }
         }
 
         botX = robotPose.x();
@@ -100,7 +125,13 @@ public class PositionalAim {
 
         botBearingToGoal = Math.asin(xToGoal / lateralRange);
         if (botX < currentGoalX) {
-            botBearingToGoal = -botBearingToGoal;
+            if (!red) {
+                botBearingToGoal = -botBearingToGoal;
+            }
+        } else {
+            if (red) {
+                botBearingToGoal = -botBearingToGoal;
+            }
         }
         bearingToGoal = botBearingToGoal + turretAngle + botAngle;
         elevationToGoal = Math.asin(heightToGoal / rangeToGoal);
@@ -146,7 +177,7 @@ public class PositionalAim {
     }
 
     public void autoVelocity() {
-        launchVelocity = (launchMultiplier * rangeToGoal) + launchOffset;
+        launchVelocity = launchOffset * Math.pow(launchMultiplier, rangeToGoal);
 
         turret.setLauncherVelocity(launchVelocity);
     }

@@ -11,7 +11,7 @@ public class Intake {
     private final double REVERSE_SPEED = -1.0;
     public static DcMotor Intake;
     public static DcMotor Intake2;
-    private static Servo IntakeGate;
+    public static Servo IntakeGate;
     boolean gateOpen = false;
 
     public static void init(HardwareMap hwMap) {

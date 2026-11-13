@@ -1,15 +1,14 @@
 package org.firstinspires.ftc.teamcode.testOpModes;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.mechanisms.FlowerIntake;
+import org.firstinspires.ftc.teamcode.AutoRoutines.StaticBlueAuto;
+import org.firstinspires.ftc.teamcode.AutoRoutines.StaticRedAuto;
 import org.firstinspires.ftc.teamcode.mechanisms.FlowerPlower;
 import org.firstinspires.ftc.teamcode.mechanisms.Intake;
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 import org.firstinspires.ftc.teamcode.mechanisms.PositionalAim;
-import org.firstinspires.ftc.teamcode.mechanisms.ShooterPIDFTesting;
 import org.firstinspires.ftc.teamcode.mechanisms.Turret;
 
 @TeleOp
@@ -19,7 +18,6 @@ public class TestTeleOp extends OpMode {
     MecanumDrive drive = new MecanumDrive();
     Intake intake = new Intake();
     FlowerPlower plow = new FlowerPlower();
-    FlowerIntake flowerIntake = new FlowerIntake();
     Turret turret = new Turret();
     PositionalAim autoAim = new PositionalAim();
     org.firstinspires.ftc.teamcode.mechanisms.ShooterPIDFTesting shooter = new org.firstinspires.ftc.teamcode.mechanisms.ShooterPIDFTesting();
@@ -39,6 +37,7 @@ public class TestTeleOp extends OpMode {
     public void loop() {
         intake.loop();
         autoAim.loop();
+        turret.loop();
 
         //Shooter Implemented by Justin (Me) to tune PIDF and make shooters work.
         //Test Classes work, just need to implement controls for the driver who uses shooter

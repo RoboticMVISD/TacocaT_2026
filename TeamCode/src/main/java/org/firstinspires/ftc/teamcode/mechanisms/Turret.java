@@ -15,9 +15,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Turret {
     public static DcMotorEx shooter1;
-    static DcMotorEx shooter2;
-    static CRServo rotator1;
-    static CRServo rotator2;
+    public static DcMotorEx shooter2;
+    public static CRServo rotator1;
+    public static CRServo rotator2;
     private static AnalogInput turretTracker1;
     private static AnalogInput turretTracker2;
 

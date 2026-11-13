@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.AutoRoutines;
 
 import static com.pedropathing.api.Paths.line;
 import static com.pedropathing.ivy.Scheduler.schedule;
-import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 import com.pedropathing.api.PoseFactory;
@@ -14,13 +13,19 @@ import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.mechanisms.FlowerIntake;
 import org.firstinspires.ftc.teamcode.mechanisms.FlowerPlower;
 import org.firstinspires.ftc.teamcode.mechanisms.Intake;
+import org.firstinspires.ftc.teamcode.mechanisms.PositionalAim;
+import org.firstinspires.ftc.teamcode.mechanisms.Turret;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 @Autonomous
 public class BlueAutoA extends OpMode {
+    Turret turret = new Turret();
+    PositionalAim autoAim = new PositionalAim();
+    Intake intake = new Intake();
+    FlowerPlower plower = new FlowerPlower();
+    public static Pose lastPosition = null;
     private Commands c = new Commands();
     private Follower follower;
     private final PoseFactory poseFactory = PoseFactory.degrees();
@@ -38,34 +43,35 @@ public class BlueAutoA extends OpMode {
     public Path disengageFlower2() {return line(F2Clear, Flower2).linear(F2Clear, Flower2);}
     public Path park() {return line(Flower2, park).linear(Flower2, park);}
     private Command autoRoutine =
-            c.autoAim(hardwareMap, this, false, follower, 29)
+            c.autoAim(this, 29, autoAim, turret)
                     .with(
-                            c.shoot(hardwareMap, this, false, follower, getRuntime() + 3)
+                            c.shoot(this, getRuntime() + 3, intake, turret, autoAim)
                             .then(
                                     follow(follower, startToFlower())
-                                    .with(c.flowerPlowerDown(hardwareMap))
+                                    .with(c.flowerPlowerDown(plower))
                             )
                             .then(
                                     follow(follower, clearFlower1())
-                                    .with(c.runIntake(hardwareMap, this, getRuntime() + 3))
+                                    .with(c.runIntake(hardwareMap, this, getRuntime() + 3, intake))
                             )
                             .then(follow(follower, disengageFlower1()))
                             .then(
-                                    c.flowerPlowerUp(hardwareMap)
+                                    c.flowerPlowerUp(plower)
                                     .with(follow(follower, flower1To2()))
                                     .with(
                                             c.waitUntilOnOtherSide(follower, 50)
-                                            .then(c.shoot(hardwareMap, this, false, follower, getRuntime() + 3)))
+                                            .then(c.shoot(this, getRuntime() + 3, intake, turret, autoAim))
+                                    )
                             )
-                            .then(c.flowerPlowerDown(hardwareMap))
+                            .then(c.flowerPlowerDown(plower))
                             .then(
                                     follow(follower, clearFlower2())
-                                    .with(c.runIntake(hardwareMap, this, getRuntime() + 3))
-                                    .with(c.shoot(hardwareMap, this, true, follower, getRuntime() + 5))
+                                    .with(c.runIntake(hardwareMap, this, getRuntime() + 3, intake))
+                                    .with(c.shoot(this, getRuntime() + 5, intake, turret, autoAim))
                             )
                             .then(follow(follower, disengageFlower2()))
                             .then(
-                                    c.flowerPlowerUp(hardwareMap)
+                                    c.flowerPlowerUp(plower)
                                     .with(follow(follower, park()))
                             )
                     ).then();
@@ -76,6 +82,11 @@ public class BlueAutoA extends OpMode {
 
         follower = Constants.create(hardwareMap);
         follower.setPose(start);
+
+        turret.init(hardwareMap);
+        autoAim.init(hardwareMap, this, false, false, follower, turret);
+        intake.init(hardwareMap);
+        plower.init(hardwareMap);
     }
 
     @Override
@@ -87,5 +98,10 @@ public class BlueAutoA extends OpMode {
     public void loop() {
         follower.update();
         Scheduler.execute();
+
+        turret.loop();
+        autoAim.loop();
+
+        lastPosition = follower.pose();
     }
 }

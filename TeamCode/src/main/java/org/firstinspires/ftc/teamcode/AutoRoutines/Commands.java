@@ -14,43 +14,29 @@ import org.firstinspires.ftc.teamcode.mechanisms.Turret;
 import org.opencv.core.Mat;
 
 public class Commands {
-    Intake intake = new Intake();
-    FlowerPlower plower = new FlowerPlower();
-    PositionalAim autoAim = new PositionalAim();
-    Turret turret = new Turret();
-    public Command flowerPlowerDown(HardwareMap hwMap) {
+    public Command flowerPlowerDown(FlowerPlower plower) {
         return Command.build()
                 .setStart(() -> {
-                    plower.init(hwMap);
-                })
-                .setExecute(() -> {
                     plower.plowDown();
                 })
                 .setDone(() ->
-                        1 == plower.FlowerPlower.getPosition()
+                        plower.FlowerPlower.getPosition() >= 0
                 )
                 .requiring(plower.FlowerPlower);
     }
-    public Command flowerPlowerUp(HardwareMap hwMap) {
+    public Command flowerPlowerUp(FlowerPlower plower) {
         return Command.build()
                 .setStart(() -> {
-                    plower.init(hwMap);
-                    plower.plowDown();
-                })
-                .setExecute(() -> {
                     plower.plowUp();
                 })
                 .setDone(() ->
-                        plower.FlowerPlower.getPosition() == 0
+                        plower.FlowerPlower.getPosition() <= 0
                 )
                 .requiring(plower.FlowerPlower);
     }
-    public Command runIntake(HardwareMap hwMap, OpMode OP, double endTime) {
+    public Command runIntake(HardwareMap hwMap, OpMode OP, double endTime, Intake intake) {
         return Command.build()
                 .setStart(() -> {
-                    intake.init(hwMap);
-                })
-                .setExecute(() -> {
                     intake.startBothIntake();
                 })
                 .setDone(() ->
@@ -61,44 +47,38 @@ public class Commands {
                 })
                 .requiring(intake.Intake, intake.Intake2);
     }
-    public Command autoAim(HardwareMap hwMap, OpMode OP, boolean red, Follower Follower, double endTime) {
+    public Command autoAim(OpMode OP, double endTime, PositionalAim autoAim, Turret turret) {
         return Command.build()
                 .setStart(() -> {
-                    turret.init(hwMap);
-                    autoAim.init(hwMap, OP, false, red, Follower, turret);
                     autoAim.aimEnabled = true;
                 })
                 .setExecute(() -> {
-                    turret.loop();
                     if (OP.getRuntime() >= endTime - 2) {
                         autoAim.aimEnabled = false;
 
                         autoAim.resetTurret();
-                    } else {
-                        autoAim.loop();
                     }
                 })
                 .setDone(() -> OP.getRuntime() >= endTime)
                 .setEnd(endCondition -> {
                     autoAim.aimEnabled = false;
-                    autoAim.loop();
-                });
+                })
+                .requiring(turret.rotator1, turret.rotator2);
     }
-    public Command shoot(HardwareMap hwMap, OpMode OP, boolean red, Follower Follower, double endTime) {
+    public Command shoot( OpMode OP, double endTime, Intake intake, Turret turret, PositionalAim autoAim) {
         return Command.build()
                 .setStart(() -> {
-                    intake.init(hwMap);
-                    turret.init(hwMap);
-                    autoAim.init(hwMap, OP, false, red, Follower, turret);
                     autoAim.launchEnabled = true;
+                    intake.gateClosed();
                 })
                 .setExecute(() -> {
+                    autoAim.launchEnabled = true;
+                    autoAim.loop();
+
                     double currentVelocity = turret.shooter1.getVelocity();
                     double targetVelocity = autoAim.launchVelocity;
 
-                    autoAim.loop();
-
-                    if (Math.abs(targetVelocity - currentVelocity) < 10) {
+                    if (OP.getRuntime() >= endTime - 2) {
                         intake.gateOpen();
                         intake.startBothIntake();
                     }
@@ -109,15 +89,10 @@ public class Commands {
                     autoAim.loop();
                     intake.stopIntake();
                     intake.gateClosed();
-                });
+                })
+                .requiring(intake.Intake, intake.Intake2, turret.shooter1, turret.shooter2, intake.IntakeGate);
     }
     public Command waitUntilOnOtherSide(Follower follower, double thresholdY) {
         return waitUntil(() -> Math.abs(follower.pose().y() - thresholdY) <= 2);
-    }
-    public Command fixTurret(HardwareMap hwMap) {
-        return Command.build()
-                .setStart(() -> {
-                    turret.init(hwMap);
-                });
     }
 }
