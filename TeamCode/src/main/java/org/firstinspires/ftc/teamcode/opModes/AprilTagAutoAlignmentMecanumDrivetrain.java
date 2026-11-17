@@ -62,8 +62,8 @@ public class AprilTagAutoAlignmentMecanumDrivetrain extends OpMode {
     public void loop() {
 
         //------------------ set mecanum drive inputs -------------
-        forward = -gamepad1.left_stick_x;
-        strafe = gamepad1.left_stick_y;
+        forward = -gamepad1.left_stick_y;
+        strafe = gamepad1.left_stick_x;
         rotate = gamepad1.right_stick_x;
 
         //---------------------- get april tag info ----------------
