@@ -60,25 +60,24 @@ public class AllAprilTagAutoAlignment extends OpMode {
     public void loop() {
 
         //------------------ set mecanum drive inputs -------------
-        forward = gamepad1.left_stick_y;
-        strafe = -gamepad1.left_stick_x;
-        rotate = -gamepad1.right_stick_x;
+        forward = -gamepad1.left_stick_y;
+        strafe = gamepad1.left_stick_x;
+        rotate = gamepad1.right_stick_x;
 
         //---------------------- get april tag info ----------------
 
-        // D-pad left/right select Limelight pipeline
+        // D-pad selections Limelight pipelines 6 - 9
 
-        if (gamepad1.dpadLeftWasPressed()) {
+        if (gamepad1.dpadUpWasPressed()) {
             limelight.pipelineSwitch(9);        // pipeline 9 for Blue Audience April Tag 42
             telemetry.addLine("Pipeline 9 April Tag Blue Audience");
         }
-        if (gamepad1.dpadRightWasPressed()) {
+        if (gamepad1.dpadLeftWasPressed()) {
             limelight.pipelineSwitch(8);        // pipeline 8 for Red Score April Tag 33
             telemetry.addLine("Pipeline 8 April Tag Red Score");
         }
 
-        // D-pad up/down adjust D gain
-        if (gamepad1.dpadUpWasPressed()) {
+        if (gamepad1.dpadRightWasPressed()) {
             limelight.pipelineSwitch(7);        // pipeline 7 for Blue Score April Tag 38
             telemetry.addLine("Pipeline 7 April Tag Blue Score");
         }
@@ -111,7 +110,7 @@ public class AllAprilTagAutoAlignment extends OpMode {
                     double dTerm = ((error - lastError) / dT) * kD;
                     telemetry.addData("dTerm ", dTerm);
 
-                    rotate = Range.clip(pTerm + dTerm, -0.4, 0.4);
+                    rotate = -Range.clip(pTerm + dTerm, -0.4, 0.4);
 
                     lastError = error;
                     lastTime = curTime;

@@ -16,7 +16,7 @@ public class AprilTagAutoAlignmentMecanumDrivetrain extends OpMode {
 
     //------------------- PD controller --------------------------
 
-    double kP = 0.002;
+    double kP = 0.02;
     double error = 0;
     double lastError = 0;
     double goalX = 0;  // offset here
@@ -40,7 +40,7 @@ public class AprilTagAutoAlignmentMecanumDrivetrain extends OpMode {
     public void init() {
 
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.pipelineSwitch(8);        // use pipeline for April Tag
+        limelight.pipelineSwitch(6);        // use pipeline for April Tag
 
         drive.init(hardwareMap);
 
@@ -62,9 +62,9 @@ public class AprilTagAutoAlignmentMecanumDrivetrain extends OpMode {
     public void loop() {
 
         //------------------ set mecanum drive inputs -------------
-        forward = gamepad1.left_stick_y;
-        strafe = -gamepad1.left_stick_x;
-        rotate = -gamepad1.right_stick_x;
+        forward = -gamepad1.left_stick_y;
+        strafe = gamepad1.left_stick_x;
+        rotate = gamepad1.right_stick_x;
 
         //---------------------- get april tag info ----------------
 
@@ -87,7 +87,7 @@ public class AprilTagAutoAlignmentMecanumDrivetrain extends OpMode {
                     double dT = curTime - lastTime;
                     double dTerm = ((error - lastError) / dT) * kD;
 
-                    rotate = Range.clip(pTerm + dTerm, -0.4, 0.4);
+                    rotate = -Range.clip(pTerm + dTerm, -0.4, 0.4);
 
                     lastError = error;
                     lastTime = curTime;
