@@ -60,31 +60,31 @@ public class AllAprilTagAutoAlignment extends OpMode {
     public void loop() {
 
         //------------------ set mecanum drive inputs -------------
-        forward = -gamepad1.left_stick_y;
-        strafe = gamepad1.left_stick_x;
-        rotate = gamepad1.right_stick_x;
+        forward = gamepad1.left_stick_y;
+        strafe = -gamepad1.left_stick_x;
+        rotate = -gamepad1.right_stick_x;
 
         //---------------------- get april tag info ----------------
 
         // D-pad left/right select Limelight pipeline
 
         if (gamepad1.dpadLeftWasPressed()) {
-            limelight.pipelineSwitch(9);        // pipeline 9 for Red Audience April Tag
-            telemetry.addLine("Pipeline 9 April Tag Red Audience");
+            limelight.pipelineSwitch(9);        // pipeline 9 for Blue Audience April Tag 42
+            telemetry.addLine("Pipeline 9 April Tag Blue Audience");
         }
         if (gamepad1.dpadRightWasPressed()) {
-            limelight.pipelineSwitch(8);        // pipeline 8 for Blue Score April Tag
-            telemetry.addLine("Pipeline 8 April Tag Blue Score");
+            limelight.pipelineSwitch(8);        // pipeline 8 for Red Score April Tag 33
+            telemetry.addLine("Pipeline 8 April Tag Red Score");
         }
 
         // D-pad up/down adjust D gain
         if (gamepad1.dpadUpWasPressed()) {
-            limelight.pipelineSwitch(7);        // pipeline 7 for Blue Audience April Tag
-            telemetry.addLine("Pipeline 7 April Tag Blue Audience");
+            limelight.pipelineSwitch(7);        // pipeline 7 for Blue Score April Tag 38
+            telemetry.addLine("Pipeline 7 April Tag Blue Score");
         }
         if (gamepad1.dpadDownWasPressed()) {
-            limelight.pipelineSwitch(6);        // pipeline 6 for Red Score April Tag
-            telemetry.addLine("Pipeline 9 April Tag Red Score");
+            limelight.pipelineSwitch(6);        // pipeline 6 for Red Score April Tag 37
+            telemetry.addLine("Pipeline 6 April Tag Red Score");
         }
 
 

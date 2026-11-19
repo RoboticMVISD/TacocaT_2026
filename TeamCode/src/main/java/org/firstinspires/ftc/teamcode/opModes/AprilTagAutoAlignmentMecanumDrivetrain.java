@@ -40,7 +40,7 @@ public class AprilTagAutoAlignmentMecanumDrivetrain extends OpMode {
     public void init() {
 
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.pipelineSwitch(9);        // use pipeline for April Tag
+        limelight.pipelineSwitch(8);        // use pipeline for April Tag
 
         drive.init(hardwareMap);
 
@@ -62,9 +62,9 @@ public class AprilTagAutoAlignmentMecanumDrivetrain extends OpMode {
     public void loop() {
 
         //------------------ set mecanum drive inputs -------------
-        forward = -gamepad1.left_stick_y;
-        strafe = gamepad1.left_stick_x;
-        rotate = gamepad1.right_stick_x;
+        forward = gamepad1.left_stick_y;
+        strafe = -gamepad1.left_stick_x;
+        rotate = -gamepad1.right_stick_x;
 
         //---------------------- get april tag info ----------------
 
