@@ -4,12 +4,11 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.mechanisms.MecanumDrive;
 
 @TeleOp
-public class AllAprilTagAutoAlignment extends OpMode {
+public class AllAprilTagCheck extends OpMode {
 
     private Limelight3A limelight;
     private MecanumDrive drive = new MecanumDrive();
@@ -24,6 +23,8 @@ public class AllAprilTagAutoAlignment extends OpMode {
     double kD = 0.0001;
     double curTime = 0;
     double lastTime = 0;
+    String pipelineLabel = "Pipeline 9 April Tag Blue Audience";
+    String AprilTagLabel = "42";
 
     // ----------------------- driving setup ---------------------
 
@@ -59,6 +60,11 @@ public class AllAprilTagAutoAlignment extends OpMode {
     @Override
     public void loop() {
 
+        // NOTE: I cannot completely cut power to the camera, but I could make it basically turn off
+        // Using VisionPortal: Call myVisionPortal.close(); at the end of the autonomous mode.
+        // According to FTC docs:  this stops all background vision processing and closes USB communication with the camera
+        // (which typically turns off the camera's active indicator LED and drops its power draw to near-idle).
+        
         //------------------ set mecanum drive inputs -------------
         forward = -gamepad1.left_stick_y;
         strafe = gamepad1.left_stick_x;
@@ -66,69 +72,49 @@ public class AllAprilTagAutoAlignment extends OpMode {
 
         //---------------------- get april tag info ----------------
 
+        // get latest limelight result
+
+        LLResult llResult = limelight.getLatestResult();
+
         // D-pad selections Limelight pipelines 6 - 9
 
         if (gamepad1.dpadUpWasPressed()) {
             limelight.pipelineSwitch(9);        // pipeline 9 for Blue Audience April Tag 42
-            telemetry.addLine("Pipeline 9 April Tag Blue Audience");
+            pipelineLabel = "Pipeline 9 April Tag Blue Audience";
+            AprilTagLabel = "42";
         }
         if (gamepad1.dpadLeftWasPressed()) {
-            limelight.pipelineSwitch(8);        // pipeline 8 for Red Score April Tag 33
-            telemetry.addLine("Pipeline 8 April Tag Red Score");
+            limelight.pipelineSwitch(8);        // pipeline 8 for Red Audience April Tag 33
+            pipelineLabel = "Pipeline 8 April Tag Red Score";
+            AprilTagLabel = "33";
         }
-
         if (gamepad1.dpadRightWasPressed()) {
             limelight.pipelineSwitch(7);        // pipeline 7 for Blue Score April Tag 38
-            telemetry.addLine("Pipeline 7 April Tag Blue Score");
+            pipelineLabel = "Pipeline 7 April Tag Blue Score";
+            AprilTagLabel = "38";
         }
         if (gamepad1.dpadDownWasPressed()) {
             limelight.pipelineSwitch(6);        // pipeline 6 for Red Score April Tag 37
-            telemetry.addLine("Pipeline 6 April Tag Red Score");
+            pipelineLabel = "Pipeline 6 April Tag Red Score";
+            AprilTagLabel = "37";
         }
 
+        telemetry.update();
+        telemetry.addLine(pipelineLabel);
+        telemetry.addLine("-------------------");
 
-        // get latest limelight result
-        LLResult llResult = limelight.getLatestResult();
-
-        //----------------- auto align rotation logic --------------
-
-        if (gamepad1.left_trigger > 0.3) {
-            if (llResult != null && llResult.isValid()) {
-
-                error = goalX - llResult.getTx();
-                telemetry.addData("Tx ", llResult.getTx());
-                telemetry.addData("error ", error);
-
-                if (Math.abs(error) < angleTolerance) {
-                    rotate = 0;
-                } else {
-                    double pTerm = error * kP;
-                    telemetry.addData("pTerm ", pTerm);
-
-                    curTime = getRuntime();
-                    double dT = curTime - lastTime;
-                    double dTerm = ((error - lastError) / dT) * kD;
-                    telemetry.addData("dTerm ", dTerm);
-
-                    rotate = -Range.clip(pTerm + dTerm, -0.4, 0.4);
-
-                    lastError = error;
-                    lastTime = curTime;
-                }
-            }
-            else {
-                lastTime = getRuntime();
-                lastError = 0;
-            }
-        }
-        else {
-            lastError = 0;
-            lastTime = getRuntime();
+        if (llResult != null && llResult.isValid()) {
+            telemetry.addLine("April tag seen: Yes");
+            telemetry.addData("April tag: ", AprilTagLabel);
+        } else {
+            telemetry.addLine("April tag seen: No");
         }
 
         // drive our motors!
         drive.drive(forward, strafe, rotate);
-/*
+
+
+        /*
         // update P and D on the fly
         // 'B' button cycles through the different step sizes for tuning precision
         if (gamepad1.bWasPressed()) {
@@ -150,21 +136,23 @@ public class AllAprilTagAutoAlignment extends OpMode {
             kD -= stepSizes[stepIndex];
         }
 */
+        // telemetry.addLine("--------------------");
+
         // -------------------------------- telemetry ---------------------------
+
+        // get latest limelight result
+
+        /*
+        LLResult llResult = limelight.getLatestResult();
+
         if (llResult != null && llResult.isValid()) {
-            if (gamepad1.left_trigger > 0.3) {
-                telemetry.addLine("AUTO ALIGN");
-                telemetry.addData("Target X", llResult.getTx());
-                telemetry.addData("Target Y", llResult.getTy());
-                telemetry.addData("Target Area", llResult.getTa());
-            }
+            telemetry.addData("Target X", llResult.getTx());
+            telemetry.addData("Target Y", llResult.getTy());
+            telemetry.addData("Target Area", llResult.getTa());
             // display Detection telemetry
             telemetry.addData("Error", error);
-        } else {
-            telemetry.addLine("MANUAL ROTATE MODE");
         }
-        telemetry.addLine("--------------------");
-        telemetry.addData("Pipeline: ", llResult.getPipelineIndex());
+         */
         /*
         telemetry.addData("Tuning P: ", "%.4f (Dpad L/R)", kP);
         telemetry.addData("Tuning D: ", "%.4f (Dpad U/D)", kD);
